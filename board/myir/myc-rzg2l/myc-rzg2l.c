@@ -61,6 +61,11 @@ DECLARE_GLOBAL_DATA_PTR;
 #define PFC_PM3B                              (PFC_BASE + 0x176)
 #define PFC_PMC3B                             (PFC_BASE + 0x23B)
 
+/*P4_0*//*belongs to v3lite*/
+#define PFC_P14                               (PFC_BASE + 0x014)
+#define PFC_PM14                              (PFC_BASE + 0x128)
+#define PFC_PMC14                             (PFC_BASE + 0x214)
+
 void s_init(void)
 {
 	/* SD1 power control: P39_1 = 0; P39_2 = 1; */
@@ -103,6 +108,11 @@ int board_init(void)
 	gd->bd->bi_boot_params = CONFIG_SYS_TEXT_BASE + 0x50000;
 
 	mdelay(140);
+	/*belongs to v3lite*/
+ 	*(volatile u32 *)(PFC_PMC14) &= 0xFFFFFFFE; /* Port func mode  */
+ 	*(volatile u32 *)(PFC_PM14) = (*(volatile u32 *)(PFC_PM14) & 0xFFFFFF8) | 0x2; /* Port output mode 0b10 */
+ 	*(volatile u32 *)(PFC_P14) = (*(volatile u32 *)(PFC_P14) & 0xFFFFFFF4) | 0x05;
+	mdelay(13);
 
 	// phy1 reset
 	*(volatile u32 *)(PFC_PMC3C) &= 0xFFFFFFF7; /* Port func mode  */
